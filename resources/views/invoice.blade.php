@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
     <title>A simple, clean, and responsive HTML invoice template</title>
     
     <style>
@@ -11,7 +12,7 @@
         padding: 30px;
         border: 1px solid #eee;
         box-shadow: 0 0 10px rgba(0, 0, 0, .15);
-        font-size: 16px;
+        font-size: 14px;
         line-height: 24px;
         font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
         color: #555;
@@ -37,8 +38,8 @@
     }
     
     .invoice-box table tr.top table td.title {
-        font-size: 45px;
-        line-height: 45px;
+        font-size: 30px;
+        line-height: 30px;
         color: #333;
     }
     
@@ -50,6 +51,7 @@
         background: #eee;
         border-bottom: 1px solid #ddd;
         font-weight: bold;
+        text-align: left;
     }
     
     .invoice-box table tr.details td {
@@ -96,24 +98,32 @@
     .rtl table tr td:nth-child(2) {
         text-align: left;
     }
+    .text-right{
+        text-align: right;
+    }
+    .text-left{
+        text-align: left;
+    }
     </style>
 </head>
 
 <body>
     <div class="invoice-box">
         <table cellpadding="0" cellspacing="0">
-            <!-- <tr class="top">
-                <td colspan="2">
+            <tr class="top">
+                <td colspan="6">
                     <table>
                         <tr>
                             <td class="title">
-                                <img src="https://www.sparksuite.com/images/logo.png" style="width:100%; max-width:300px;">
+                                <img src="{{public_path('logo.png')}}" style="width:200px;height:200px;">
                             </td>
                             
-                            <td>
-                                Invoice #: 123<br>
-                                Created: January 1, 2015<br>
-                                Due: February 1, 2015
+                            <td class="text-right">
+                                <b>OOTB INNOVATIONS PVT. LTD.</b><br>
+                                Kukatpally, Hyderabad<br>
+                                TELANGANA, INDIA<br/>
+                                500085<br/>
+                                
                             </td>
                         </tr>
                     </table>
@@ -121,26 +131,32 @@
             </tr>
             
             <tr class="information">
-                <td colspan="2">
+                <td colspan="6">
                     <table>
                         <tr>
-                            <td>
-                                Sparksuite, Inc.<br>
-                                12345 Sunny Road<br>
-                                Sunnyville, CA 12345
+                            <td class="text-left">
+                                <b>PAREKH Agencies</b><br/>
+                                #6&11, Zainab Commercial Complex, 6-3-802, Ameerpet,<br/>
+                                Hyderabad - 500016<br/>
+                                TELANGANA.<br/><br/>
+                                GST: 36AAFFP2409K1Z7<br/>
+                                Phone: <br/>
+                                040-66745117,040-23406428,040-23403117<br/>
+                                Email: info@parekhhardware.com<br/>
+                                Kiran Patel (Partner)<br/>
+                                +91-8008090980<br/>
                             </td>
                             
-                            <td>
-                                Acme Corp.<br>
-                                John Doe<br>
-                                john@example.com
+                            <td class="text-right">
+                                Invoice #: {{date('Ymd')}}-10002<br>
+                                {{date('d F,Y')}}<br>
                             </td>
                         </tr>
                     </table>
                 </td>
-            </tr> -->
+            </tr>
             
-            <tr class="heading">
+            <!-- <tr class="heading">
                 <td>
                     Payment Method
                 </td>
@@ -158,60 +174,64 @@
                 <td>
                     1000
                 </td>
-            </tr>
+            </tr> -->
             
             <tr class="heading">
-                <td>
-                    Item
-                </td>
-                
-                <td>
-                    Price
-                </td>
+                <td>Sl. No.</td>
+                <td>Particular</td>
+                <td>Quantity</td>
+                <td>Per Unit</td>
+                <td>GST Rate</td>
+                <td class="amount">Amount</td>
             </tr>
-            
+            @php 
+            $i=1;
+            $total = 0;
+            @endphp
+            @foreach($itemtitle as $key=>$item)
             <tr class="item">
-                <td>
-                    Website design
-                </td>
-                
-                <td>
-                    $300.00
-                </td>
+                <td>{{$i++}}</td>
+                <td style="text-align: left;">{{$itemtitle[$key]}}</td>
+                <td>{{$quantity[$key]}}</td>
+                <td>{{$unitprice[$key]}}</td>
+                <td>{{$applicabletax[$key]}}</td>
+                <td>{{$amount[$key]}}</td>
+                @php 
+                $total+=$amount[$key]; 
+                @endphp
             </tr>
-            
-            <tr class="item">
-                <td>
-                    Hosting (3 months)
-                </td>
-                
-                <td>
-                    $75.00
-                </td>
-            </tr>
-            
-            <tr class="item last">
-                <td>
-                    Domain name (1 year)
-                </td>
-                
-                <td>
-                    $10.00
-                </td>
+            @endforeach
+            <tr>
+                <td colspan="6" ></td>
             </tr>
             
             <tr class="total">
-                <td></td>
+                <td colspan="5" class="text-right"> Sub-total :</td>
                 
-                <td>
-                   Total: $385.00
+                <td class="text-left">
+                   {{$total}}
+                </td>
+            </tr>
+            <tr class="total">
+                <td colspan="5" class="text-right">GST :</td>
+                
+                <td class="text-left">
+                   0%
+                </td>
+            </tr>
+            <tr class="total">
+                <td colspan="5" class="text-right"> Net Amount :</td>
+                
+                <td class="text-left">
+                   {{$total}}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6" style="text-decoration: underline;">
+                    Authorized Signatory
                 </td>
             </tr>
         </table>
     </div>
-    <div align="center">
-    	<button>Print</button>
-    </div>
 </body>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </html>

@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/template','HomeController@getTemplate');
+Route::post('/generate-pdf','HomeController@generatePdf');
