@@ -9,9 +9,9 @@
     .invoice-box {
         max-width: 800px;
         margin: auto;
-        padding: 30px;
-        border: 1px solid #eee;
-        box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+        //padding: 30px;
+        //border: 1px solid #eee;
+        //box-shadow: 0 0 10px rgba(0, 0, 0, .15);
         font-size: 14px;
         line-height: 24px;
         font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
@@ -25,7 +25,7 @@
     }
     
     .invoice-box table td {
-        padding: 5px;
+        //padding: 5px;
         vertical-align: top;
     }
     
@@ -112,21 +112,7 @@
         <table cellpadding="0" cellspacing="0">
             <tr class="top">
                 <td colspan="6">
-                    <table>
-                        <tr>
-                            <td class="title">
-                                <img src="{{public_path('logo.png')}}" style="width:200px;height:200px;">
-                            </td>
-                            
-                            <td class="text-right">
-                                <b>OOTB INNOVATIONS PVT. LTD.</b><br>
-                                Kukatpally, Hyderabad<br>
-                                TELANGANA, INDIA<br/>
-                                500085<br/>
-                                
-                            </td>
-                        </tr>
-                    </table>
+                    <img src="{{public_path('headerbg.png')}}" style="width:700px;height: 120px;">
                 </td>
             </tr>
             
@@ -135,20 +121,23 @@
                     <table>
                         <tr>
                             <td class="text-left">
-                                <b>PAREKH Agencies</b><br/>
-                                #6&11, Zainab Commercial Complex, 6-3-802, Ameerpet,<br/>
-                                Hyderabad - 500016<br/>
-                                TELANGANA.<br/><br/>
-                                GST: 36AAFFP2409K1Z7<br/>
-                                Phone: <br/>
-                                040-66745117,040-23406428,040-23403117<br/>
-                                Email: info@parekhhardware.com<br/>
-                                Kiran Patel (Partner)<br/>
-                                +91-8008090980<br/>
+                                <br/>
+                                <br/>
+                                <b>SPRINT TELEFILMS PVT LTD</b><br/>
+                                8-2-269/19/S/1,<br/>
+                                FIRST FLOOR.<br/>
+                                LANE BESIDE-LV PRASAD EYE HOSPITAL<br/>
+                                ROAD NO-2<br/>
+                                BANJARAHILLS<br/>
+                                HYDERABAD- 500034<br/>
+                                GST NUMBER : 36AANCS6179CIZO<br/>
+                                Contact Person : Mr. Tirumal Reddy (Director)
                             </td>
                             
                             <td class="text-right">
-                                Invoice #: {{date('Ymd')}}-10002<br>
+                                <br/>
+                                <br/>
+                                Invoice #: {{date('Ymd')}}-10001<br>
                                 {{date('d F,Y')}}<br>
                             </td>
                         </tr>
@@ -188,6 +177,7 @@
             $i=1;
             $total = 0;
             @endphp
+            @if(isset($itemtitle))
             @foreach($itemtitle as $key=>$item)
             <tr class="item">
                 <td>{{$i++}}</td>
@@ -195,12 +185,13 @@
                 <td>{{$quantity[$key]}}</td>
                 <td>{{$unitprice[$key]}}</td>
                 <td>{{$applicabletax[$key]}}</td>
-                <td>{{$amount[$key]}}</td>
+                <td class="text-left">{{$amount[$key]}}</td>
                 @php 
                 $total+=$amount[$key]; 
                 @endphp
             </tr>
             @endforeach
+            @endif
             <tr>
                 <td colspan="6" ></td>
             </tr>
