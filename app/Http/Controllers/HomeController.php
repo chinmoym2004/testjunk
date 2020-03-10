@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Auth;
 use App\User;
+use App\Http\Controller\ElasticSearch;
 class HomeController extends Controller
 {
     //
@@ -35,5 +36,21 @@ class HomeController extends Controller
     		$user = $this->getDataFromDB($user->id);
     	}
     	return response()->json(['status'=>'true','user'=>$user]);
+    }
+
+
+    public function searchUser()
+    {
+        $params = [
+            'index' => 'processes',
+            'type' => 'process',
+            'size' => 1000,
+            // "stored_fields" => ["course_studios"],
+            'body' => $query
+        ];
+
+        $search = 
+
+        $processes = search::search($server.":9200", $params)['hits']['hits']);
     }
 }
