@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('invoice');
+    return view('index');
 });
 
 Route::get('/template','HomeController@getTemplate');

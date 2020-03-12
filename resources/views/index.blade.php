@@ -2,29 +2,44 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>A simple, clean, and responsive HTML invoice template</title>
-    
+    <title>Create Invoice manually</title>
+    <?php 
+
+        $billing_address=\Session::get('billing_address',null);
+        $invoice_id=\Session::get('invoice_id',null);
+        $itemtitle=\Session::get('itemtitle',null);
+        $quantity=\Session::get('quantity',null);
+        $unitprice=\Session::get('unitprice',null);
+        $applicabletax=\Session::get('applicabletax',null);
+        $amount=\Session::get('amount',null);
+        $invoicefilename = \Session::get('filename',null);
+
+    ?>
     <style>
-    /*.invoice-box {
-        max-width: 800px;
-        margin: auto;
-        padding: 30px;
-        border: 1px solid #eee;
-        box-shadow: 0 0 10px rgba(0, 0, 0, .15);
-        font-size: 16px;
+    body{
+        padding:30px;
+        width:794px;
+        margin: auto
+    }
+    .invoice-box {
+        height:1000px;
+        font-size: 14px;
         line-height: 24px;
         font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
         color: #555;
     }
+    .footer{
+        height:123px;
+    }
     
     .invoice-box table {
-        width: 100%;
         line-height: inherit;
         text-align: left;
+        width: 100%;
     }
     
     .invoice-box table td {
-        padding: 5px;
+        //padding: 5px;
         vertical-align: top;
     }
     
@@ -37,8 +52,8 @@
     }
     
     .invoice-box table tr.top table td.title {
-        font-size: 45px;
-        line-height: 45px;
+        font-size: 30px;
+        line-height: 30px;
         color: #333;
     }
     
@@ -50,6 +65,7 @@
         background: #eee;
         border-bottom: 1px solid #ddd;
         font-weight: bold;
+        text-align: left;
     }
     
     .invoice-box table tr.details td {
@@ -69,7 +85,7 @@
         font-weight: bold;
     }
     
-    @media only screen and (max-width: 600px) {
+    /*@media only screen and (max-width: 600px) {
         .invoice-box table tr.top table td {
             width: 100%;
             display: block;
@@ -96,138 +112,137 @@
     .rtl table tr td:nth-child(2) {
         text-align: left;
     }
+    .text-right{
+        text-align: right;
+    }
+    .text-left{
+        text-align: left;
+    }
     </style>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
 </head>
 
 <body>
     <form method="POST" action="{{url('/generate-pdf')}}" class="form">
-        <div class="container">
-                <table class="table" id="ItemTable">
-                    <!-- <tr class="top">
-                        <td colspan="2">
-                            <table>
-                                <tr>
-                                    <td class="title">
-                                        <img src="https://www.sparksuite.com/images/logo.png" style="width:100%; max-width:300px;">
-                                    </td>
-                                    
-                                    <td>
-                                        Invoice #: 123<br>
-                                        Created: January 1, 2015<br>
-                                    </td>
-                                </tr>
-                            </table>
+        <div class="invoice-box">
+            <table cellpadding="0" cellspacing="0">
+                <thead>
+                    <tr class="top">
+                        <td colspan="6">
+                            <img src="{{asset('headerbg.png')}}" style="width:100%;height: 140px;">
                         </td>
                     </tr>
                     
                     <tr class="information">
-                        <td colspan="2">
+                        <td colspan="6">
                             <table>
                                 <tr>
-                                    <td>
-                                        Sparksuite, Inc.<br>
-                                        12345 Sunny Road<br>
-                                        Sunnyville, CA 12345
+                                    <td class="text-left" style="width:50%">
+                                        <textarea cols="" name="billing_address" id="editor" rows="10">{{$billing_address ?? ''}}</textarea>
                                     </td>
                                     
-                                    <td>
-                                        Acme Corp.<br>
-                                        John Doe<br>
-                                        john@example.com
+                                    <td class="text-right">
+                                        <br/>
+                                        <br/>
+                                        Invoice #: <input type="text" name="invoice_id" value="{{$invoice_id ?? date('Ymd').'-10003'}}"/><br>
+                                        {{date('d F,Y')}}<br>
                                     </td>
                                 </tr>
                             </table>
                         </td>
-                    </tr> -->
-                    <thead class="thead-dark">
+                    </tr>
+                    
+                   
+                    
+                    <tr class="heading">
+                        <td>Particular</td>
+                        <td>Quantity</td>
+                        <td>Per Unit</td>
+                        <td>GST Rate</td>
+                        <td class="amount">Amount</td>
+                        <td></td>
+                    </tr>
+                <thead>
+                <tbody id="ItemTable">
+                    
+                    @if(isset($itemtitle))
+                        @foreach($itemtitle as $key=>$item)
                         <tr class="item">
+                            
+                            <td style="text-align: left;width: 45%;">
+                                <input type="text" name="itemtitle[]" value="{{$itemtitle[$key] ?? ''}}"/>
+                            </td>
+                            
                             <td>
-                                Item Description
+                                <input type="text" name="quantity[]" value="{{$quantity[$key] ?? ''}}"/>
+                            </td>
+
+                            <td>
+                                <input type="text" name="unitprice[]" value="{{$unitprice[$key] ?? ''}}"/>
+                            </td>
+                            
+                            <td>
+                                <input type="text" name="applicabletax[]" value="{{$applicabletax[$key] ?? ''}}"/>
                             </td>
                             <td>
-                                Quantity
-                            </td>
-                            <td>
-                                Unit Price
-                            </td>
-                            <td>
-                                TAX %
-                            </td>
-                            <td>
-                                Total Price
-                            </td>
-                            <td>
-                                
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="item">
-                            <td>
-                                <input type="text" name="itemtitle[]"/>
-                            </td>
-                            <td>
-                                <input type="text" name="quantity[]"/>
-                            </td>
-                            <td>
-                                <input type="text" name="unitprice[]" />
-                            </td>
-                            <td>
-                                <input type="text" name="applicabletax[]" />
-                            </td>
-                            <td>
-                                <input type="text" name="amount[]"/>
+                                <input type="text" name="amount[]" value="{{$amount[$key] ?? ''}}"/>
                             </td>
                             <td>
                                 <button class="removeitem">X</button>
                             </td>
+                            <td></td>
                         </tr>
-                    </tbody>
-                    
-                    <!-- <tr class="item">
-                        <td>
-                            Hosting (3 months)
-                        </td>
-                        
-                        <td>
-                            $75.00
-                        </td>
-                    </tr>
-                    
-                    <tr class="item last">
-                        <td>
-                            Domain name (1 year)
-                        </td>
-                        
-                        <td>
-                            $10.00
-                        </td>
-                    </tr>
-                    
+                        @endforeach
+                    @endif
+                </tbody>
+                
+                <tfoot>
                     <tr class="total">
-                        <td></td>
+                        <td colspan="5" class="text-right"> Sub-total :</td>
                         
-                        <td>
-                           Total: $385.00
+                        <td class="text-left">
+                           Total
                         </td>
-                    </tr> -->
-                </table>
-        </div>
-        <div class="container">
-        	<button id="addItemInList" class="btn btn-primary float-right">Add Item</button>
+                    </tr>
+                    <tr class="total">
+                        <td colspan="5" class="text-right">GST :</td>
+                        
+                        <td class="text-left">
+                           0%
+                        </td>
+                    </tr>
+                    <tr class="total">
+                        <td colspan="5" class="text-right"> Net Amount :</td>
+                        
+                        <td class="text-left">
+                           Net Amount
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            <button id="addItemInList" class="btn btn-primary float-right">Add Item</button>
             <button type="submit" class="btn btn-primary float-right">Preview & Download</button>
+        </div>
+        <div class="footer">
+            <p style="text-decoration: underline;">Authorized Signatory</p><br/><br/>
+            <img src="{{asset('footertbg.png')}}" style="width:100%;height: 20px;">
         </div>
     </form>
 </body>
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/17.0.0/classic/ckeditor.js"></script>
+
+<script>
+    ClassicEditor
+        .create( document.querySelector( '#editor' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+</script>
+
 <script type="text/javascript">
     $(document).on("click","#addItemInList",function(event){
         event.preventDefault();
-        $("#ItemTable tbody").append('<tr class="item"><td><input type="text" name="itemtitle[]"/></td><td><input type="text" name="quantity[]"/></td><td><input type="text" name="unitprice[]" /></td><td><input type="text" name="applicabletax[]" /></td><td><input type="text" name="amount[]"/></td><td><button class="removeitem">X</button></td></tr>');
+        $("#ItemTable").append('<tr class="item"><td><input type="text" name="itemtitle[]"/></td><td><input type="text" name="quantity[]"/></td><td><input type="text" name="unitprice[]" /></td><td><input type="text" name="applicabletax[]" /></td><td><input type="text" name="amount[]"/></td><td><button class="removeitem">X</button></td></tr>');
     });
 
 

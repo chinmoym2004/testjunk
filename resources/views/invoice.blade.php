@@ -3,25 +3,43 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <title>A simple, clean, and responsive HTML invoice template</title>
+    <?php 
+
+        $billing_address=\Session::get('billing_address');
+        $invoice_id=\Session::get('invoice_id');
+        $itemtitle=\Session::get('itemtitle');
+        $quantity=\Session::get('quantity');
+        $unitprice=\Session::get('unitprice');
+        $applicabletax=\Session::get('applicabletax');
+        $amount=\Session::get('amount');
+        $invoicefilename = \Session::get('filename');
+
+    ?>
+
+    <title>{{$invoicefilename}}</title>
     
     <style>
+        body{
+            padding:30px;
+            width:794px;
+            margin: auto
+        }
     .invoice-box {
-        max-width: 800px;
-        margin: auto;
-        //padding: 30px;
-        //border: 1px solid #eee;
-        //box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+        
+        height:1000px;
         font-size: 14px;
         line-height: 24px;
         font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
         color: #555;
     }
+    .footer{
+        height:123px;
+    }
     
     .invoice-box table {
-        width: 100%;
         line-height: inherit;
         text-align: left;
+        width: 100%;
     }
     
     .invoice-box table td {
@@ -71,7 +89,7 @@
         font-weight: bold;
     }
     
-    @media only screen and (max-width: 600px) {
+    /*@media only screen and (max-width: 600px) {
         .invoice-box table tr.top table td {
             width: 100%;
             display: block;
@@ -83,7 +101,7 @@
             display: block;
             text-align: center;
         }
-    }
+    }*/
     
     /** RTL **/
     .rtl {
@@ -105,124 +123,133 @@
         text-align: left;
     }
     </style>
+    <script>
+        function printDiv(divName) {
+             var printContents = document.getElementById(divName).innerHTML;
+             var originalContents = document.body.innerHTML;
+
+             document.body.innerHTML = printContents;
+
+             window.print();
+
+             document.body.innerHTML = originalContents;
+        }
+    </script>
 </head>
 
 <body>
-    <div class="invoice-box">
-        <table cellpadding="0" cellspacing="0">
-            <tr class="top">
-                <td colspan="6">
-                    <img src="{{public_path('headerbg.png')}}" style="width:700px;height: 120px;">
-                </td>
-            </tr>
-            
-            <tr class="information">
-                <td colspan="6">
-                    <table>
-                        <tr>
-                            <td class="text-left">
-                                <br/>
-                                <br/>
-                                <b>SPRINT TELEFILMS PVT LTD</b><br/>
-                                8-2-269/19/S/1,<br/>
-                                FIRST FLOOR.<br/>
-                                LANE BESIDE-LV PRASAD EYE HOSPITAL<br/>
-                                ROAD NO-2<br/>
-                                BANJARAHILLS<br/>
-                                HYDERABAD- 500034<br/>
-                                GST NUMBER : 36AANCS6179CIZO<br/>
-                                Contact Person : Mr. Tirumal Reddy (Director)
-                            </td>
-                            
-                            <td class="text-right">
-                                <br/>
-                                <br/>
-                                Invoice #: {{date('Ymd')}}-10001<br>
-                                {{date('d F,Y')}}<br>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            
-            <!-- <tr class="heading">
-                <td>
-                    Payment Method
-                </td>
+    <div id="printableArea">
+        <div class="invoice-box">
+            <table cellpadding="0" cellspacing="0">
+                <tr class="top">
+                    <td colspan="6">
+                        <img src="{{asset('headerbg.png')}}" style="width:100%;height: 140px;">
+                    </td>
+                </tr>
                 
-                <td>
-                    Check #
-                </td>
-            </tr>
-            
-            <tr class="details">
-                <td>
-                    Check
-                </td>
+                <tr class="information">
+                    <td colspan="6">
+                        <table>
+                            <tr>
+                                <td class="text-left">
+                                    <br/>
+                                    <br/>
+                                    <?php echo $billing_address; ?>
+                                </td>
+                                
+                                <td class="text-right">
+                                    <br/>
+                                    <br/>
+                                    Invoice #: {{$invoice_id}}<br>
+                                    {{date('d F,Y')}}<br>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
                 
-                <td>
-                    1000
-                </td>
-            </tr> -->
-            
-            <tr class="heading">
-                <td>Sl. No.</td>
-                <td>Particular</td>
-                <td>Quantity</td>
-                <td>Per Unit</td>
-                <td>GST Rate</td>
-                <td class="amount">Amount</td>
-            </tr>
-            @php 
-            $i=1;
-            $total = 0;
-            @endphp
-            @if(isset($itemtitle))
-            @foreach($itemtitle as $key=>$item)
-            <tr class="item">
-                <td>{{$i++}}</td>
-                <td style="text-align: left;">{{$itemtitle[$key]}}</td>
-                <td>{{$quantity[$key]}}</td>
-                <td>{{$unitprice[$key]}}</td>
-                <td>{{$applicabletax[$key]}}</td>
-                <td class="text-left">{{$amount[$key]}}</td>
+                <!-- <tr class="heading">
+                    <td>
+                        Payment Method
+                    </td>
+                    
+                    <td>
+                        Check #
+                    </td>
+                </tr>
+                
+                <tr class="details">
+                    <td>
+                        Check
+                    </td>
+                    
+                    <td>
+                        1000
+                    </td>
+                </tr> -->
+                
+                <tr class="heading">
+                    <td>Sl. No.</td>
+                    <td>Particular</td>
+                    <td>Quantity</td>
+                    <td>Per Unit</td>
+                    <td>GST Rate</td>
+                    <td class="amount">Amount</td>
+                </tr>
                 @php 
-                $total+=$amount[$key]; 
+                $i=1;
+                $total = 0;
+                setlocale(LC_MONETARY, 'en_IN');
                 @endphp
-            </tr>
-            @endforeach
-            @endif
-            <tr>
-                <td colspan="6" ></td>
-            </tr>
-            
-            <tr class="total">
-                <td colspan="5" class="text-right"> Sub-total :</td>
+                @if(\Session::has('itemtitle'))
+                    @foreach(\Session::get('itemtitle') as $key=>$item)
+                    <tr class="item">
+                        <td>{{$i++}}</td>
+                        <td style="text-align: left;width: 45%;">{{$itemtitle[$key]}}</td>
+                        <td>{{$quantity[$key]}}</td>
+                        <td>${{$unitprice[$key]}}</td>
+                        <td>{{$applicabletax[$key]}}</td>
+                        <td class="text-right">${{$amount[$key]}}</td>
+                        @php 
+                        $tmp = str_replace(",","",$amount[$key]);
+                        $total+=$tmp; 
+                        @endphp
+                    </tr>
+                    @endforeach
+                @endif
+                <tr>
+                    <td colspan="6" ></td>
+                </tr>
                 
-                <td class="text-left">
-                   {{$total}}
-                </td>
-            </tr>
-            <tr class="total">
-                <td colspan="5" class="text-right">GST :</td>
-                
-                <td class="text-left">
-                   0%
-                </td>
-            </tr>
-            <tr class="total">
-                <td colspan="5" class="text-right"> Net Amount :</td>
-                
-                <td class="text-left">
-                   {{$total}}
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6" style="text-decoration: underline;">
-                    Authorized Signatory
-                </td>
-            </tr>
-        </table>
+                <tr class="total">
+                    <td colspan="5" class="text-right"> Sub-total :</td>
+                    
+                    <td class="text-left">
+                       ${{\App\Http\Controllers\HomeController::moneyFormatIndia($total)}}
+                    </td>
+                </tr>
+                <tr class="total">
+                    <td colspan="5" class="text-right">GST :</td>
+                    
+                    <td class="text-left">
+                       0%
+                    </td>
+                </tr>
+                <tr class="total">
+                    <td colspan="5" class="text-right"> Net Amount :</td>
+                    
+                    <td class="text-left">
+                       ${{\App\Http\Controllers\HomeController::moneyFormatIndia($total)}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="footer">
+            <p style="text-decoration: underline;">Authorized Signatory</p><br/><br/>
+            <img src="{{asset('footertbg.png')}}" style="width:100%;height: 20px;">
+        </div>
     </div>
+    <input type="button" onclick="printDiv('printableArea')" value="Print Invoice" />
+    <a href="{{url('/')}}">Update Invoice</a>
 </body>
 </html>
