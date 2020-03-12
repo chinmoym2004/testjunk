@@ -80,21 +80,68 @@
             @endif
 
             <div class="content">
-                <div class="title m-b-md">
-                    Laravel
+                <p class="">
+                    Well,nothing to look at.  Its going to be a ecommerce template
+                </p>
+                <div id="custom-templates">
+                  <input class="typeahead" type="text" placeholder="Oscar winners for Best Picture">
                 </div>
 
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
+
             </div>
         </div>
+
+        <script
+              src="https://code.jquery.com/jquery-3.4.1.min.js"
+              integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+              crossorigin="anonymous"></script>
+
+        <script type="text/javascript" src="{{asset('typeahead.bundle.js')}}"></script>
+        <script type="text/javascript">
+            var url = "{{url('product/search')}}";
+            function showSpinner()
+            {
+                console.log("Show spinner");
+            }
+
+            function hideSpinner()
+            {
+                console.log("hideSpinner spinner");
+            }
+            var movies = new Bloodhound({
+                datumTokenizer: function(datum) {
+                    return Bloodhound.tokenizers.whitespace(datum.value);
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                        wildcard: '%QUERY',
+                        url: url+'?q=%QUERY',
+                        // beforeSend: function(xhr){
+                        //   showSpinner();
+                        // },
+                        // filter: function(parsedResponse){
+                        //     hideSpinner();
+                        //     return parsedResponse;
+                        // },
+                        transform: function(response) {
+                          // Map the remote source JSON array to a JavaScript object array
+                          console.log(response);
+                          return $.map(response, function(movie) {
+
+                            return {
+                              value: movie._source.title
+                            };
+                        });
+                    }
+                }
+            });
+
+            // Instantiate the Typeahead UI
+            $('.typeahead').typeahead(null, {
+              display: 'value',
+              source: movies
+            });
+
+        </script>
     </body>
 </html>

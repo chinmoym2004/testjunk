@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Auth;
 use App\User;
-use App\Http\Controller\ElasticSearch;
+use App\Http\Controllers\Elasticsearch;
+
 class HomeController extends Controller
 {
     //
@@ -39,18 +40,36 @@ class HomeController extends Controller
     }
 
 
-    public function searchUser()
+    public function productSearch(Request $request)
     {
+        $host = 'localhost:9200'; 
+    // DONT USE 'query' variable , its leads to laravel param 
+        $query = [
+                    "query"=>["match"=>['title'=>$request->q]]
+                ];
         $params = [
-            'index' => 'processes',
-            'type' => 'process',
+            'index' => 'product',
+            'type' => '_doc',
             'size' => 1000,
-            // "stored_fields" => ["course_studios"],
             'body' => $query
         ];
 
-        $search = 
+        $es = Elasticsearch::search($host,$params);
+        if(isset($es['hits']['total']['value']) && $es['hits']['total']['value']!=0)
+        {
+            return $es['hits']['hits'];
+        }   
+        else
+        {
+            return [];
+        }
 
-        $processes = search::search($server.":9200", $params)['hits']['hits']);
+        // lets have some common field in ES 
+        // all index can be like "searchable"
+        // type can be based on model 
+        // have searchable_text field in body which will combine all the search text
+        // image field 
+
+        //$processes = search::search($server.":9200", $params)['hits']['hits']);
     }
 }

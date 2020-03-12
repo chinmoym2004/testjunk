@@ -18,3 +18,5 @@ Route::get('/', function () {
 Route::get('login/google', 'Auth\LoginController@redirectToProvider');
 Route::get('login/google/callback', 'Auth\LoginController@handleProviderCallback');
 Route::get('google-user', 'Auth\LoginController@getGoogleUser');
+
+Route::get('/product/search','HomeController@productSearch');
