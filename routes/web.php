@@ -20,3 +20,4 @@ Route::get('login/google/callback', 'Auth\LoginController@handleProviderCallback
 Route::get('google-user', 'Auth\LoginController@getGoogleUser');
 
 Route::get('/product/search','HomeController@productSearch');
+Route::resource('/notes','NoteController');
