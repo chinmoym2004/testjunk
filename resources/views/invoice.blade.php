@@ -77,7 +77,7 @@
     }
     
     .invoice-box table tr.item td{
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid #000;
     }
     
     .invoice-box table tr.item.last td {
@@ -121,6 +121,10 @@
     }
     .text-left{
         text-align: left;
+    }
+    .item td{
+        border:1px solid #000000;
+            padding: 10px;
     }
     </style>
     <script>
@@ -191,10 +195,10 @@
                 <tr class="heading">
                     <td>Sl. No.</td>
                     <td>Particular</td>
-                    <td>Quantity</td>
-                    <td>Per Unit</td>
-                    <td>GST Rate</td>
-                    <td class="amount">Amount</td>
+                    <td style="text-align: center;">Quantity</td>
+                    <td style="text-align: center;">Per Unit</td>
+                    <td style="text-align: center;">GST Rate</td>
+                    <td class="amount" style="text-align: center;">Amount</td>
                 </tr>
                 @php 
                 $i=1;
@@ -206,10 +210,10 @@
                     <tr class="item">
                         <td>{{$i++}}</td>
                         <td style="text-align: left;width: 45%;">{{$itemtitle[$key]}}</td>
-                        <td>{{$quantity[$key]}}</td>
-                        <td>${{$unitprice[$key]}}</td>
-                        <td>{{$applicabletax[$key]}}</td>
-                        <td class="text-right">${{$amount[$key]}}</td>
+                        <td style="text-align: center;">{{$quantity[$key]}}</td>
+                        <td style="text-align: center;">${{$unitprice[$key]}}</td>
+                        <td style="text-align: center;">{{$applicabletax[$key]}}</td>
+                        <td style="text-align: center;" class="text-right">${{$amount[$key]}}</td>
                         @php 
                         $tmp = str_replace(",","",$amount[$key]);
                         $total+=$tmp; 
@@ -224,21 +228,21 @@
                 <tr class="total">
                     <td colspan="5" class="text-right"> Sub-total :</td>
                     
-                    <td class="text-left">
+                    <td class="text-center">
                        ${{\App\Http\Controllers\HomeController::moneyFormatIndia($total)}}
                     </td>
                 </tr>
                 <tr class="total">
                     <td colspan="5" class="text-right">GST :</td>
                     
-                    <td class="text-left">
+                    <td class="text-center">
                        0%
                     </td>
                 </tr>
                 <tr class="total">
                     <td colspan="5" class="text-right"> Net Amount :</td>
                     
-                    <td class="text-left">
+                    <td class="text-center">
                        ${{\App\Http\Controllers\HomeController::moneyFormatIndia($total)}}
                     </td>
                 </tr>
