@@ -195,55 +195,58 @@
                 <tr class="heading">
                     <td>Sl. No.</td>
                     <td>Particular</td>
-                    <td style="text-align: center;">Quantity</td>
-                    <td style="text-align: center;">Per Unit</td>
-                    <td style="text-align: center;">GST Rate</td>
+                    {{-- <td style="text-align: center;">Quantity</td> --}}
+                    {{-- <td style="text-align: center;">Per Unit</td>
+                    <td style="text-align: center;">GST Rate</td> --}}
                     <td class="amount" style="text-align: center;">Amount</td>
                 </tr>
                 @php 
                 $i=1;
                 $total = 0;
+                $tax = 0;
                 setlocale(LC_MONETARY, 'en_IN');
                 @endphp
                 @if(\Session::has('itemtitle'))
                     @foreach(\Session::get('itemtitle') as $key=>$item)
                     <tr class="item">
-                        <td>{{$i++}}</td>
-                        <td style="text-align: left;width: 45%;">{{$itemtitle[$key]}}</td>
-                        <td style="text-align: center;">{{$quantity[$key]}}</td>
-                        <td style="text-align: center;">${{$unitprice[$key]}}</td>
-                        <td style="text-align: center;">{{$applicabletax[$key]}}</td>
-                        <td style="text-align: center;" class="text-right">${{$amount[$key]}}</td>
+                        <td style="width: 10%">{{$i++}}</td>
+                        <td style="text-align: left;width: 70%;">{{$itemtitle[$key]}}</td>
+                        {{-- <td style="text-align: center;">{{$quantity[$key]}}</td>
+                        <td style="text-align: center;">&#8377;{{$unitprice[$key]}}</td> --}}
+                        {{-- <td style="text-align: center;">{{$applicabletax[$key]}}%</td> --}}
+                        <td style="text-align: right;" class="text-right">&#8377;{{$amount[$key]}}</td>
                         @php 
                         $tmp = str_replace(",","",$amount[$key]);
+                        $tmp2 = $tmp*($applicabletax[$key]/100);
+                        $tax+=$tmp2;
                         $total+=$tmp; 
                         @endphp
                     </tr>
                     @endforeach
                 @endif
                 <tr>
-                    <td colspan="6" ></td>
+                    <td colspan="3" ></td>
                 </tr>
                 
                 <tr class="total">
-                    <td colspan="5" class="text-right"> Sub-total :</td>
+                    <td colspan="2" class="text-right"> Sub-total :</td>
                     
                     <td class="text-center">
-                       ${{\App\Http\Controllers\HomeController::moneyFormatIndia($total)}}
+                        &#8377;{{\App\Http\Controllers\HomeController::moneyFormatIndia($total)}}
                     </td>
                 </tr>
                 <tr class="total">
-                    <td colspan="5" class="text-right">GST :</td>
+                    <td colspan="2" class="text-right">GST (18%):</td>
                     
                     <td class="text-center">
-                       0%
+                        &#8377;{{\App\Http\Controllers\HomeController::moneyFormatIndia(round($tax))}}
                     </td>
                 </tr>
                 <tr class="total">
-                    <td colspan="5" class="text-right"> Net Amount :</td>
+                    <td colspan="2" class="text-right"> Net Amount :</td>
                     
                     <td class="text-center">
-                       ${{\App\Http\Controllers\HomeController::moneyFormatIndia($total)}}
+                        &#8377;{{\App\Http\Controllers\HomeController::moneyFormatIndia(round($total+$tax))}}
                     </td>
                 </tr>
             </table>
